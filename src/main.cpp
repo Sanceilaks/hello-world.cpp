@@ -14,6 +14,14 @@
 #include <unordered_map>
 #include <map>
 #include <fstream>
+#include <functional>
+#include <algorithm>
+#include <atomic>
+#include <cmath>
+#include <cstdio>
+#include <list>
+#include <random>
+#include <ranges>
 
 #include <nlohmann/json.hpp>
 
