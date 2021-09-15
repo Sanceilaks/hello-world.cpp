@@ -3,6 +3,7 @@
   "name": "hello-world-cpp",
   "version-string": "1.0",
   "dependencies": [
-
+    "spdlog",
+    "nlohmann-json"
   ]
 }

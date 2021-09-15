@@ -12,6 +12,9 @@
 
 #define abstract_class struct
 #define nullable std::optional
+#define lstring const std::string_view &
+
+#define FROM_PTR(p) *p
 
 #define HELLO_WORLD_CPP_HWCPPSTDDEF_H
 

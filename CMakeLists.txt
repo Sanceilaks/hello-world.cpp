@@ -22,7 +22,13 @@ ELSE()
         ENDIF()
 ENDIF()
 
+message("Toolchain file is ${CMAKE_TOOLCHAIN_FILE}")
+
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_TOOLCHAIN_FILE ${vcpkg_path}scripts\\buildsystems\\vcpkg.cmake)
 
 add_executable(hello_world_cpp src/main.cpp src/hwcppstddef.h)
+
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+
+target_link_libraries(hello_world_cpp PRIVATE nlohmann_json nlohmann_json::nlohmann_json spdlog::spdlog spdlog::spdlog_header_only)
