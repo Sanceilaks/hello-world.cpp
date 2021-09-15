@@ -61,9 +61,32 @@ public:
     }
 };
 
+abstract_class IBaseHelloWorld {
+public:
+    virtual std::string GetString() = 0;
+    virtual void SetString(lstring str) = 0;
+};
+
+class HelloWorld : public IBaseHelloWorld {
+    char* data;
+public:
+    HelloWorld(lstring d) {
+        SetString(d);
+    }
+    std::string GetString() override {
+        return FROM_PTR(new std::string (data));
+    }
+    void SetString(const std::string_view &str) override {
+        data = (char*)malloc(str.size());
+        memset(data, 0, str.size());
+        memcpy_s(data, str.size(), str.data(), str.size());
+        data[str.size()] = '\0';
+    }
+};
+
 abstract_class IBaseConfig {
 public:
-    virtual std::string GetHelloWorldForLang(lstring lang) = 0;
+    virtual IBaseHelloWorld* GetHelloWorldForLang(lstring lang) = 0;
 };
 
 abstract_class IBaseConfigReader {
@@ -80,10 +103,10 @@ public:
         json = new nlohmann::json(j);
     }
 
-    std::string GetHelloWorldForLang(lstring lang) override {
+    IBaseHelloWorld* GetHelloWorldForLang(lstring lang) override {
         auto j = nlohmann::json(FROM_PTR(json));
         if (j.is_null()) throw new ConfigExceptionConfigLocaleNotFoundInConfigFile();
-        return FROM_PTR(new std::string(j[lang.data()].get<std::string>().data()));
+        return new HelloWorld(FROM_PTR(new std::string(j[lang.data()].get<std::string>().data())));
     }
 };
 
@@ -111,11 +134,19 @@ public:
     }
 };
 
+/*abstract_class IBaseHelloWorldPrinter {
+public:
+    virtual void Print()
+};*/
 
 int main() {
     IBaseConfigReader* c = new ConfigReader();
 
-    std::cout << c->ReadConfig()->GetHelloWorldForLang("en").data() << std::endl;
+    IBaseHelloWorld* hello_world = c->ReadConfig()->GetHelloWorldForLang("en");
+
+    std::cout << hello_world->GetString() << std::endl;
+    hello_world->SetString("ASDASDAD");
+    std::cout << hello_world->GetString() << std::endl;
 
     return 0;
 }
