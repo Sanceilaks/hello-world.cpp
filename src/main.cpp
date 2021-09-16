@@ -38,11 +38,11 @@
 #define nullable std::optional
 #define lstring const std::string_view &
 
-#define FROM_PTR(p) *p
+                    #define FROM_PTR(p) *p
 
-#define HELLO_WORLD_CPP_LOGGER_LOG_INFO  SPDLOG_INFO
-#define HELLO_WORLD_CPP_LOGGER_LOG_WARNING  SPDLOG_WARNING
-#define HELLO_WORLD_CPP_LOGGER_LOG_ERROR  SPDLOG_ERROR
+                    #define HELLO_WORLD_CPP_LOGGER_LOG_INFO  SPDLOG_INFO
+                    #define HELLO_WORLD_CPP_LOGGER_LOG_WARNING  SPDLOG_WARNING
+                    #define HELLO_WORLD_CPP_LOGGER_LOG_ERROR  SPDLOG_ERROR
 
 std::string stdcfg = R"(
 {
@@ -66,15 +66,15 @@ class ConfigExceptionConfigLocaleNotFoundInConfigFile : public IBaseConfigExcept
 public:
     void JustNone() override {
         //nonoe
-    }
+                                }
 
-    const char *const WhatIsHappend() override {
-        return "Locale is invalide pleas contact with developers and решите this kvestion with his";
-    }
+                                const char *const WhatIsHappend() override {
+                                    return "Locale is invalide pleas contact with developers and решите this kvestion with his";
+                                }
 
-    const char * what() const override {
-        return "None";
-    }
+                                const char * what() const override {
+                                    return "None";
+                                }
 };
 
 abstract_class IBaseHelloWorld {
@@ -94,9 +94,9 @@ public:
     }
     void SetString(const std::string_view &str) override {
         data = (char*)malloc(str.size());
-        memset(data, 0, str.size());
-        memcpy_s(data, str.size(), str.data(), str.size());
-        data[str.size()] = '\0';
+                                            memset(data, 0, str.size());
+                                            memcpy_s(data, str.size(), str.data(), str.size());
+                                            data[str.size()] = '\0';
     }
 };
 
@@ -114,16 +114,16 @@ public:
 class Config : public IBaseConfig {
     nlohmann::json* json;
 public:
-    Config(lstring data) {
-        auto j = nlohmann::json::parse(data);
-        json = new nlohmann::json(j);
+                                                                                                                                                                                                                                                                                                                                                                                    Config(lstring data) {
+                                                                                                                                                                                                                                                                                                                                                                                        auto j = nlohmann::json::parse(data);
+                                                                                                                                                                                                                                                                                                                                                                                        json = new nlohmann::json(j);
 
-        HELLO_WORLD_CPP_LOGGER_LOG_INFO("New config info was initialized!");
-    }
+                                                                                                                                                                                                                                                                                                                                                                                        HELLO_WORLD_CPP_LOGGER_LOG_INFO("New config info was initialized!");
+                                                                                                                                                                                                                                                                                                                                                                                    }
 
     IBaseHelloWorld* GetHelloWorldForLang(lstring lang) override {
         auto j = nlohmann::json(FROM_PTR(json));
-        if (j.is_null()) throw new ConfigExceptionConfigLocaleNotFoundInConfigFile();
+                                                        if (j.is_null()) throw new ConfigExceptionConfigLocaleNotFoundInConfigFile();
         return new HelloWorld(FROM_PTR(new std::string(j[lang.data()].get<std::string>().data())));
     }
 };
@@ -134,13 +134,13 @@ public:
         HELLO_WORLD_CPP_LOGGER_LOG_INFO("Config reader was initialized!");
     }
 
-    IBaseConfig * ReadConfig() override {
-        HELLO_WORLD_CPP_LOGGER_LOG_INFO("Trying to read config!");
-        if (!std::filesystem::exists("HELLO_WORLD_CONFIG.JSON")) {
-            std::ofstream o("HELLO_WORLD_CONFIG.JSON");
-            o.clear();
-            o << stdcfg;
-        }
+                                                IBaseConfig * ReadConfig() override {
+                                                    HELLO_WORLD_CPP_LOGGER_LOG_INFO("Trying to read config!");
+                                                    if (!std::filesystem::exists("HELLO_WORLD_CONFIG.JSON")) {
+                                                        std::ofstream o("HELLO_WORLD_CONFIG.JSON");
+                                                        o.clear();
+                                                        o << stdcfg;
+                                                    }
 
         std::ifstream t("HELLO_WORLD_CONFIG.JSON");
         std::string str((std::istreambuf_iterator<char>(t)),
@@ -158,22 +158,22 @@ public:
 class NotImplementedError : std::exception {
 public:
     NotImplementedError() : std::exception("NOT IMPLEMENTED") {}
-};
+                    };
 
-abstract_class IBaseOutFactory {
-public:
-    virtual std::ostream& GetOstream() = 0;
-    virtual std::ofstream& GetOfstream() = 0;
-};
+                    abstract_class IBaseOutFactory {
+                    public:
+                                                virtual std::ostream& GetOstream() = 0;
+                            virtual std::ofstream& GetOfstream() = 0;
+                    };
 
-class Outfactory : public IBaseOutFactory {
-public:
+                    class Outfactory : public IBaseOutFactory {
+                    public:
     std::ofstream & GetOfstream() override{
-        throw new NotImplementedError();
+                                                                                        throw new NotImplementedError();
     }
     std::ostream & GetOstream() override {
         return std::cout;
-    }
+                                                                                            }
 };
 
 abstract_class IBaseHelloWorldPrinter {
@@ -183,18 +183,17 @@ public:
 
 class HelloWorldPrinter : public IBaseHelloWorldPrinter {
     IBaseHelloWorld* _hello_world;
-public:
-    HelloWorldPrinter(IBaseHelloWorld* hello_world) {
+public: HelloWorldPrinter(IBaseHelloWorld* hello_world) {
         this->_hello_world = hello_world;
     }
 
-    void Print() override {
-        HELLO_WORLD_CPP_LOGGER_LOG_INFO("Trying to print: {}", _hello_world->GetString());
+                                                                void Print() override {
+                                                                    HELLO_WORLD_CPP_LOGGER_LOG_INFO("Trying to print: {}", _hello_world->GetString());
 
-        std::string& str = FROM_PTR(new std::string());
-        str = FROM_PTR(new std::string(fmt::format("\n\n\n\n\n[MEGA HELLO WORLD PRINTER BY VOIDPTR_T] >> {}\n\n\n\n\n\r\0", this->_hello_world->GetString())));
-        IBaseOutFactory* factory = new Outfactory();
-        factory->GetOstream() << str;
+                                                                    std::string& str = FROM_PTR(new std::string());
+                                                                    str = FROM_PTR(new std::string(fmt::format("\n\n\n\n\n[MEGA HELLO WORLD PRINTER BY VOIDPTR_T] >> {}\n\n\n\n\n\r\0", this->_hello_world->GetString())));
+                                                                    IBaseOutFactory* factory = new Outfactory();
+                                                                    factory->GetOstream() << str;
     }
 };
 
@@ -207,17 +206,17 @@ public:
 class LoggerInitializer : public IBaseLoggerInitializer {
     spdlog::logger* l;
 public:
-    LoggerInitializer() {
-        l = nullptr;
-    }
-    void InitializeLogger() override {
-        char* name = new char[24];
-        spdlog::set_default_logger(spdlog::stderr_color_mt(std::string(name)));
-        l = spdlog::get(name).get();
-    }
-    void ShutdownLogger() override {
-        delete l;
-    }
+                        LoggerInitializer() {
+                            l = nullptr;
+                        }
+                                                                     void InitializeLogger() override {
+                            char* name = new char[24];
+                            spdlog::set_default_logger(spdlog::stderr_color_mt(std::string(name)));
+                            l = spdlog::get(name).get();
+                        }
+                        void ShutdownLogger() override {
+                            delete l;
+                        }
 };
 
 int main() {
@@ -229,7 +228,6 @@ int main() {
     IBaseHelloWorldPrinter* helloWorldPrinter = new HelloWorldPrinter(helloWorld);
 
     helloWorldPrinter->Print();
-
 
     HELLO_WORLD_CPP_LOGGER_LOG_INFO("THX FROM USING OUR HELLO WORLD!");
     return 0;
