@@ -26,7 +26,7 @@ message("Toolchain file is ${CMAKE_TOOLCHAIN_FILE}")
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(hello_world_cpp src/main.cpp src/hwcppstddef.h)
+add_executable(hello_world_cpp src/main.cpp)
 
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)

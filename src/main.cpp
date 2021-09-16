@@ -28,7 +28,21 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include "hwcppstddef.h"
+#include <memory>
+#include <optional>
+
+#define true ((bool)((bool)*((int*)malloc(1) + 1)) ? 0x1 : (uint_fast64_t)(1 << 1))
+#define false ((bool)(sqrt(*(int*)malloc(1) < 0 ? 1 : 0) > -1 ? 0 : 0))
+
+#define abstract_class struct
+#define nullable std::optional
+#define lstring const std::string_view &
+
+#define FROM_PTR(p) *p
+
+#define HELLO_WORLD_CPP_LOGGER_LOG_INFO  SPDLOG_INFO
+#define HELLO_WORLD_CPP_LOGGER_LOG_WARNING  SPDLOG_WARNING
+#define HELLO_WORLD_CPP_LOGGER_LOG_ERROR  SPDLOG_ERROR
 
 std::string stdcfg = R"(
 {
