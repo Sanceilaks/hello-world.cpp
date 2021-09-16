@@ -37,12 +37,10 @@
 #define abstract_class struct
 #define nullable std::optional
 #define lstring const std::string_view &
-
-                    #define FROM_PTR(p) *p
-
-                    #define HELLO_WORLD_CPP_LOGGER_LOG_INFO  SPDLOG_INFO
-                    #define HELLO_WORLD_CPP_LOGGER_LOG_WARNING  SPDLOG_WARNING
-                    #define HELLO_WORLD_CPP_LOGGER_LOG_ERROR  SPDLOG_ERROR
+#define FROM_PTR(p) *p
+#define HELLO_WORLD_CPP_LOGGER_LOG_INFO  SPDLOG_INFO
+#define HELLO_WORLD_CPP_LOGGER_LOG_WARNING  SPDLOG_WARNING
+#define HELLO_WORLD_CPP_LOGGER_LOG_ERROR  SPDLOG_ERROR
 
 std::string stdcfg = R"(
 {
@@ -176,24 +174,50 @@ public:
                                                                                             }
 };
 
+abstract_class IBaseCharWriter {
+public:
+    virtual void WriteChar(char c) = 0;
+};
+
+class CharWriter : public IBaseCharWriter {
+public:
+    void WriteChar(char c) override {
+        const auto* const ch = new char(c);
+        IBaseOutFactory* out = new Outfactory();
+        out->GetOstream().put(*ch);
+    }
+};
+
 abstract_class IBaseHelloWorldPrinter {
 public:
     virtual void Print() = 0;
+    virtual bool IsPrinted() = 0;
 };
 
 class HelloWorldPrinter : public IBaseHelloWorldPrinter {
     IBaseHelloWorld* _hello_world;
+    bool ipr = false;
 public: HelloWorldPrinter(IBaseHelloWorld* hello_world) {
         this->_hello_world = hello_world;
     }
 
-                                                                void Print() override {
-                                                                    HELLO_WORLD_CPP_LOGGER_LOG_INFO("Trying to print: {}", _hello_world->GetString());
+     void Print() override {
+         this->ipr = false;
+        HELLO_WORLD_CPP_LOGGER_LOG_INFO("Trying to print: {}", _hello_world->GetString());
+     std::string& str = FROM_PTR(new std::string());
+     str = FROM_PTR(new std::string(fmt::format("\n\n\n\n\n[MEGA HELLO WORLD PRINTER BY VOIDPTR_T] >> {}\n\n\n\n\n\r\0", this->_hello_world->GetString())));
+     std::thread([&](){
+         IBaseCharWriter* charWriter = new CharWriter();
+         for (auto i : str) {
+             auto* ch = new char(i);
+             charWriter->WriteChar(*ch);
+         }
+         this->ipr = true;
+     }).detach();
+    }
 
-                                                                    std::string& str = FROM_PTR(new std::string());
-                                                                    str = FROM_PTR(new std::string(fmt::format("\n\n\n\n\n[MEGA HELLO WORLD PRINTER BY VOIDPTR_T] >> {}\n\n\n\n\n\r\0", this->_hello_world->GetString())));
-                                                                    IBaseOutFactory* factory = new Outfactory();
-                                                                    factory->GetOstream() << str;
+    bool IsPrinted() override {
+        return this->ipr;
     }
 };
 
@@ -221,14 +245,40 @@ public:
 
 int main() {
     IBaseLoggerInitializer* loggerInitializer = new LoggerInitializer();
-    HELLO_WORLD_CPP_LOGGER_LOG_INFO("Welcome to hello-world.cpp project. Just relax and wait");
+    std::thread([](){
+        HELLO_WORLD_CPP_LOGGER_LOG_INFO("Welcome to hello-world.cpp project. Just relax and wait");
+        std::thread([&](){
+            IBaseConfigReader* c = new ConfigReader();
+            IBaseHelloWorld* helloWorld = c->ReadConfig()->GetHelloWorldForLang("en");
+            IBaseHelloWorldPrinter* helloWorldPrinter = new HelloWorldPrinter(helloWorld);
 
-    IBaseConfigReader* c = new ConfigReader();
-    IBaseHelloWorld* helloWorld = c->ReadConfig()->GetHelloWorldForLang("en");
-    IBaseHelloWorldPrinter* helloWorldPrinter = new HelloWorldPrinter(helloWorld);
+            helloWorldPrinter->Print();
+            while (!helloWorldPrinter->IsPrinted()) malloc(1);
 
-    helloWorldPrinter->Print();
+            HELLO_WORLD_CPP_LOGGER_LOG_INFO("THX FROM USING OUR HELLO WORLD!");
 
-    HELLO_WORLD_CPP_LOGGER_LOG_INFO("THX FROM USING OUR HELLO WORLD!");
+            HELLO_WORLD_CPP_LOGGER_LOG_INFO("Post hello world busy");
+
+            while (((bool)*(int*)malloc(1)) == true) {
+                malloc(sizeof (long long int));
+                for (auto i = 0; i < 10000000; ++i) { std::thread([](){malloc(sizeof (long long int)); sqrt(sin(sin(pow(pow(pow(2, 8), 16), 16))));}).detach(); malloc(sizeof (long long int));}
+                malloc(sin(sin(pow(pow(pow(2, 8), 16), 16))));
+                malloc(sizeof (long long int));
+            }
+
+            for (auto i = 0; i < 100000; ++i) {
+                std::thread([](){sqrt(pow(pow(2, 8), 16));}).detach();
+            }
+
+            exit(-666);
+        }).detach();
+    }).detach();
+
+    while (true) {
+        auto* t = new int_fast32_t ();
+        auto* b = new int_least32_t ();
+    }
+
+
     return 0;
 }
